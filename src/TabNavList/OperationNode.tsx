@@ -26,6 +26,7 @@ export interface OperationNodeProps {
   tabMoving?: boolean;
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
   popupClassName?: string;
+  hasAddButton?: boolean;
 }
 
 const OperationNode = React.forwardRef<HTMLDivElement, OperationNodeProps>((props, ref) => {
@@ -45,6 +46,7 @@ const OperationNode = React.forwardRef<HTMLDivElement, OperationNodeProps>((prop
     onTabClick,
     getPopupContainer,
     popupClassName,
+    hasAddButton = true,
   } = props;
   // ======================== Dropdown ========================
   const [open, setOpen] = useState(false);
@@ -216,7 +218,7 @@ const OperationNode = React.forwardRef<HTMLDivElement, OperationNodeProps>((prop
   return (
     <div className={classNames(`${prefixCls}-nav-operations`, className)} style={style} ref={ref}>
       {moreNode}
-      <AddButton prefixCls={prefixCls} locale={locale} editable={editable} />
+      {hasAddButton && <AddButton prefixCls={prefixCls} locale={locale} editable={editable} />}
     </div>
   );
 });
