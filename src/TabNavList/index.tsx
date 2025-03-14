@@ -4,7 +4,7 @@ import ResizeObserver from 'rc-resize-observer';
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import { useComposeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import TabContext from '../TabContext';
 import type { GetIndicatorSize } from '../hooks/useIndicator';
 import useIndicator from '../hooks/useIndicator';
@@ -42,6 +42,7 @@ export interface TabNavListProps {
   more?: MoreProps;
   mobile: boolean;
   tabBarGutter?: number;
+  tabSeparator?: React.ReactNode;
   renderTabBar?: RenderTabBar;
   className?: string;
   style?: React.CSSProperties;
@@ -105,6 +106,7 @@ const TabNavList = React.forwardRef<HTMLDivElement, TabNavListProps>((props, ref
     locale,
     tabPosition,
     tabBarGutter,
+    tabSeparator,
     children,
     onTabClick,
     onTabScroll,
@@ -411,51 +413,62 @@ const TabNavList = React.forwardRef<HTMLDivElement, TabNavListProps>((props, ref
 
   const tabNodes = tabs.map<React.ReactNode>((tab, i) => {
     const { key } = tab;
+
+    let hasTabSep = true;
+    if (key == activeKey) {
+      hasTabSep = false;
+    } else if (tabs.length > i + 1 && tabs[i + 1].key == activeKey) {
+      hasTabSep = false;
+    }
+
     return (
-      <TabNode
-        id={id}
-        prefixCls={prefixCls}
-        key={key}
-        tab={tab}
-        /* first node should not have margin left */
-        style={i === 0 ? undefined : tabNodeStyle}
-        closable={tab.closable}
-        editable={editable}
-        active={key === activeKey}
-        focus={key === focusKey}
-        renderWrapper={children}
-        removeAriaLabel={locale?.removeAriaLabel}
-        tabCount={enabledTabs.length}
-        currentPosition={i + 1}
-        onClick={e => {
-          onTabClick(key, e);
-        }}
-        onKeyDown={handleKeyDown}
-        onFocus={() => {
-          if (!isMouse) {
-            setFocusKey(key);
-          }
-          scrollToTab(key);
-          doLockAnimation();
-          if (!tabsWrapperRef.current) {
-            return;
-          }
-          // Focus element will make scrollLeft change which we should reset back
-          if (!rtl) {
-            tabsWrapperRef.current.scrollLeft = 0;
-          }
-          tabsWrapperRef.current.scrollTop = 0;
-        }}
-        onBlur={() => {
-          setFocusKey(undefined);
-        }}
-        onMouseDown={() => {
-          setIsMouse(true);
-        }}
-        onMouseUp={() => {
-          setIsMouse(false);
-        }}
-      />
+      <Fragment key={key}>
+        <TabNode
+          id={id}
+          prefixCls={prefixCls}
+          key={key}
+          tab={tab}
+          /* first node should not have margin left */
+          style={i === 0 ? undefined : tabNodeStyle}
+          closable={tab.closable}
+          editable={editable}
+          active={key === activeKey}
+          focus={key === focusKey}
+          renderWrapper={children}
+          removeAriaLabel={locale?.removeAriaLabel}
+          tabCount={enabledTabs.length}
+          currentPosition={i + 1}
+          onClick={e => {
+            onTabClick(key, e);
+          }}
+          onKeyDown={handleKeyDown}
+          onFocus={() => {
+            if (!isMouse) {
+              setFocusKey(key);
+            }
+            scrollToTab(key);
+            doLockAnimation();
+            if (!tabsWrapperRef.current) {
+              return;
+            }
+            // Focus element will make scrollLeft change which we should reset back
+            if (!rtl) {
+              tabsWrapperRef.current.scrollLeft = 0;
+            }
+            tabsWrapperRef.current.scrollTop = 0;
+          }}
+          onBlur={() => {
+            setFocusKey(undefined);
+          }}
+          onMouseDown={() => {
+            setIsMouse(true);
+          }}
+          onMouseUp={() => {
+            setIsMouse(false);
+          }}
+        />
+        {hasTabSep && tabSeparator && <span>{tabSeparator}</span>}
+      </Fragment>
     );
   });
 

@@ -49,6 +49,7 @@ export interface TabsProps
   animated?: boolean | AnimatedConfig;
   renderTabBar?: RenderTabBar;
   tabBarExtraContent?: TabBarExtraContent;
+  tabSeparator?: React.ReactNode;
   tabBarGutter?: number;
   tabBarStyle?: React.CSSProperties;
   tabPosition?: TabPosition;
@@ -89,6 +90,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>((props, ref) => {
     tabBarGutter,
     tabBarStyle,
     tabBarExtraContent,
+    tabSeparator,
     locale,
     more,
     destroyInactiveTabPane,
@@ -174,6 +176,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>((props, ref) => {
     locale,
     more,
     tabBarGutter,
+    tabSeparator,
     onTabClick: onInternalTabClick,
     onTabScroll,
     extra: tabBarExtraContent,
