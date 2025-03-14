@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import classNames from 'classnames';
 import raf from 'rc-util/lib/raf';
 import ResizeObserver from 'rc-resize-observer';
@@ -39,6 +39,7 @@ export interface TabNavListProps {
   moreTransitionName?: string;
   mobile: boolean;
   tabBarGutter?: number;
+  tabSeparator?: React.ReactNode;
   renderTabBar?: RenderTabBar;
   className?: string;
   style?: React.CSSProperties;
@@ -94,6 +95,7 @@ function TabNavList(props: TabNavListProps, ref: React.Ref<HTMLDivElement>) {
     locale,
     tabPosition,
     tabBarGutter,
+    tabSeparator,
     children,
     onTabClick,
     onTabScroll,
@@ -284,39 +286,49 @@ function TabNavList(props: TabNavListProps, ref: React.Ref<HTMLDivElement>) {
 
   const tabNodes: React.ReactElement[] = tabs.map((tab, i) => {
     const { key } = tab;
+
+    let hasTabSep = true;
+    if (key == activeKey) {
+      hasTabSep = false;
+    } else if (tabs.length > i + 1 && tabs[i + 1].key == activeKey) {
+      hasTabSep = false;
+    }
+
     return (
-      <TabNode
-        id={id}
-        prefixCls={prefixCls}
-        key={key}
-        tab={tab}
-        /* first node should not have margin left */
-        style={i === 0 ? undefined : tabNodeStyle}
-        closable={tab.closable}
-        editable={editable}
-        active={key === activeKey}
-        renderWrapper={children}
-        removeAriaLabel={locale?.removeAriaLabel}
-        ref={getBtnRef(key)}
-        onClick={e => {
-          onTabClick(key, e);
-        }}
-        onRemove={() => {
-          removeBtnRef(key);
-        }}
-        onFocus={() => {
-          scrollToTab(key);
-          doLockAnimation();
-          if (!tabsWrapperRef.current) {
-            return;
-          }
-          // Focus element will make scrollLeft change which we should reset back
-          if (!rtl) {
-            tabsWrapperRef.current.scrollLeft = 0;
-          }
-          tabsWrapperRef.current.scrollTop = 0;
-        }}
-      />
+      <Fragment key={key}>
+        <TabNode
+          id={id}
+          prefixCls={prefixCls}
+          tab={tab}
+          /* first node should not have margin left */
+          style={i === 0 ? undefined : tabNodeStyle}
+          closable={tab.closable}
+          editable={editable}
+          active={key === activeKey}
+          renderWrapper={children}
+          removeAriaLabel={locale?.removeAriaLabel}
+          ref={getBtnRef(key)}
+          onClick={e => {
+            onTabClick(key, e);
+          }}
+          onRemove={() => {
+            removeBtnRef(key);
+          }}
+          onFocus={() => {
+            scrollToTab(key);
+            doLockAnimation();
+            if (!tabsWrapperRef.current) {
+              return;
+            }
+            // Focus element will make scrollLeft change which we should reset back
+            if (!rtl) {
+              tabsWrapperRef.current.scrollLeft = 0;
+            }
+            tabsWrapperRef.current.scrollTop = 0;
+          }}
+        />
+        {hasTabSep && tabSeparator && <span>{tabSeparator}</span>}
+      </Fragment>
     );
   });
 

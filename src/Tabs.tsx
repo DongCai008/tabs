@@ -47,6 +47,7 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
   animated?: boolean | AnimatedConfig;
   renderTabBar?: RenderTabBar;
   tabBarExtraContent?: TabBarExtraContent;
+  tabSeparator?: React.ReactNode;
   tabBarGutter?: number;
   tabBarStyle?: React.CSSProperties;
   tabPosition?: TabPosition;
@@ -105,6 +106,7 @@ function Tabs(
     tabBarGutter,
     tabBarStyle,
     tabBarExtraContent,
+    tabSeparator,
     locale,
     moreIcon,
     moreTransitionName,
@@ -214,6 +216,7 @@ function Tabs(
     moreIcon,
     moreTransitionName,
     tabBarGutter,
+    tabSeparator,
     onTabClick: onInternalTabClick,
     onTabScroll,
     extra: tabBarExtraContent,
