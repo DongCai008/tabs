@@ -26,6 +26,7 @@ export interface OperationNodeProps {
   tabMoving?: boolean;
   getPopupContainer?: (node: HTMLElement) => HTMLElement;
   popupClassName?: string;
+  hasAddButton?: boolean;
 }
 
 function OperationNode(
@@ -46,6 +47,7 @@ function OperationNode(
     onTabClick,
     getPopupContainer,
     popupClassName,
+    hasAddButton = true,
   }: OperationNodeProps,
   ref: React.Ref<HTMLDivElement>,
 ) {
@@ -220,7 +222,7 @@ function OperationNode(
   return (
     <div className={classNames(`${prefixCls}-nav-operations`, className)} style={style} ref={ref}>
       {moreNode}
-      <AddButton prefixCls={prefixCls} locale={locale} editable={editable} />
+      {hasAddButton && <AddButton prefixCls={prefixCls} locale={locale} editable={editable} />}
     </div>
   );
 }
